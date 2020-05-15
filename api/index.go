@@ -2,6 +2,7 @@ package api
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -9,16 +10,37 @@ import (
 	whoisparser "github.com/likexian/whois-parser-go"
 )
 
+type Body struct {
+	Domain string
+}
+
 // Handler handles POSTed JSON data
 func Handler(w http.ResponseWriter, r *http.Request) {
-	err := r.ParseForm()
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+
+	// Make sure it's a POST request
+	if r.Method != http.MethodPost {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		fmt.Fprintf(w, "Please only POST data here")
 		return
 	}
 
-	domain := r.Form.Get("domain")
-	whois := getWhois(domain)
+	// err := r.ParseForm()
+	// if err != nil {
+	// 	http.Error(w, err.Error(), http.StatusBadRequest)
+	// 	return
+	// }
+
+	// domain := r.Form.Get("domain")
+	decoder := json.NewDecoder(r.Body)
+	var body Body
+
+	err := decoder.Decode(&body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	whois := getWhois(body.Domain)
 
 	jsonWhois, err := json.Marshal(whois)
 	if err != nil {
