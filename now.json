@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "github": {
+    "enabled": true,
+    "silent": true
+  },
+  "builds": [
+    {
+      "src": "api/**/*.go",
+      "use": "@now/go"
+    }
+  ],
+  "redirects": [{ "source": "/", "destination": "/api" }]
+}
