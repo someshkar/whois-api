@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 
@@ -28,8 +27,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	// w.Write(jsonWhois)
-	fmt.Fprintf("%s", string(jsonWhois))
+	w.Write(jsonWhois)
 }
 
 // getWhois gets structured WhoIs data
