@@ -10,5 +10,5 @@
       "use": "@now/go"
     }
   ],
-  "redirects": [{ "source": "/", "destination": "/api" }]
+  "redirects": [{ "source": "/", "methods": ["POST"], "destination": "/api" }]
 }
