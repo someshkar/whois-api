@@ -10,6 +10,7 @@ import (
 	whoisparser "github.com/likexian/whois-parser-go"
 )
 
+// Body defines the JSON body for this route
 type Body struct {
 	Domain string
 }
@@ -24,13 +25,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// err := r.ParseForm()
-	// if err != nil {
-	// 	http.Error(w, err.Error(), http.StatusBadRequest)
-	// 	return
-	// }
-
-	// domain := r.Form.Get("domain")
+	// Decode JSON body
 	decoder := json.NewDecoder(r.Body)
 	var body Body
 
@@ -52,7 +47,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonWhois)
 }
 
-// getWhois gets structured WhoIs data
+// getWhois gets structured Whois data
 func getWhois(domain string) whoisparser.WhoisInfo {
 	raw, err := whois.Whois(domain)
 	if err != nil {

@@ -10,5 +10,8 @@
       "use": "@now/go"
     }
   ],
-  "routes": [{ "src": "/", "dest": "/api/index.go" }]
+  "routes": [
+    { "src": "/", "dest": "/api/index.go" },
+    { "src": "/ping", "dest": "/api/ping.go" }
+  ]
 }
