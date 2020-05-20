@@ -3,11 +3,9 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
-	"github.com/likexian/whois-go"
-	whoisparser "github.com/likexian/whois-parser-go"
+	"github.com/someshkar/whois-api/lib"
 )
 
 // Body defines the JSON body for this route
@@ -35,7 +33,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	whois := getWhois(body.Domain)
+	whois, err := lib.GetWhois(body.Domain)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
 
 	jsonWhois, err := json.Marshal(whois)
 	if err != nil {
@@ -47,17 +49,17 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonWhois)
 }
 
-// getWhois gets structured Whois data
-func getWhois(domain string) whoisparser.WhoisInfo {
-	raw, err := whois.Whois(domain)
-	if err != nil {
-		log.Fatalln(err)
-	}
+// // getWhois gets structured Whois data
+// func getWhois(domain string) whoisparser.WhoisInfo {
+// 	raw, err := whois.Whois(domain)
+// 	if err != nil {
+// 		log.Fatalln(err)
+// 	}
 
-	result, err := whoisparser.Parse(raw)
-	if err != nil {
-		log.Fatalln(err)
-	}
+// 	result, err := whoisparser.Parse(raw)
+// 	if err != nil {
+// 		log.Fatalln(err)
+// 	}
 
-	return result
-}
+// 	return result
+// }
