@@ -6,15 +6,11 @@ import (
 	"net/http"
 
 	"github.com/someshkar/whois-api/lib"
+	"github.com/someshkar/whois-api/structs"
 )
 
-// Body defines the JSON body for this route
-type Body struct {
-	Domain string
-}
-
-// Handler handles POSTed JSON data
-func Handler(w http.ResponseWriter, r *http.Request) {
+// MainHandler handles Whois info for a single domain
+func MainHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Make sure it's a POST request
 	if r.Method != http.MethodPost {
@@ -25,7 +21,7 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	// Decode JSON body
 	decoder := json.NewDecoder(r.Body)
-	var body Body
+	var body structs.SingleBody
 
 	err := decoder.Decode(&body)
 	if err != nil {
@@ -33,33 +29,21 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Get Whois data
 	whois, err := lib.GetWhois(body.Domain)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	// Convert Whois data to JSON
 	jsonWhois, err := json.Marshal(whois)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	// Send response
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonWhois)
 }
-
-// // getWhois gets structured Whois data
-// func getWhois(domain string) whoisparser.WhoisInfo {
-// 	raw, err := whois.Whois(domain)
-// 	if err != nil {
-// 		log.Fatalln(err)
-// 	}
-
-// 	result, err := whoisparser.Parse(raw)
-// 	if err != nil {
-// 		log.Fatalln(err)
-// 	}
-
-// 	return result
-// }
