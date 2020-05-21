@@ -6,7 +6,7 @@
   },
   "builds": [
     {
-      "src": "**/*.go",
+      "src": "api/**/*.go",
       "use": "@now/go"
     }
   ],
