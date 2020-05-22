@@ -2,6 +2,7 @@ package api
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	jsoniter "github.com/json-iterator/go"
@@ -9,9 +10,8 @@ import (
 	"github.com/someshkar/whois-api/structs"
 )
 
-// MainHandler handles Whois info for a single domain
-func MainHandler(w http.ResponseWriter, r *http.Request) {
-
+// MultiHandler handles Whois requests for multiple domains
+func MultiHandler(w http.ResponseWriter, r *http.Request) {
 	// Make sure it's a POST request
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -21,7 +21,7 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Decode JSON body
 	decoder := jsoniter.NewDecoder(r.Body)
-	var body structs.SingleBody
+	var body structs.MultiBody
 
 	err := decoder.Decode(&body)
 	if err != nil {
@@ -29,21 +29,13 @@ func MainHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Get Whois data
-	whois, err := lib.GetWhois(body.Domain)
+	allWhois := lib.GetMultiWhois(body.Domains)
+
+	jsonAllWhois, err := jsoniter.Marshal(allWhois)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		log.Fatalln(err)
 	}
 
-	// Convert Whois data to JSON
-	jsonWhois, err := jsoniter.Marshal(whois)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	// Send response
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(jsonWhois)
+	w.Write(jsonAllWhois)
 }

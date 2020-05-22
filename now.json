@@ -12,6 +12,7 @@
   ],
   "routes": [
     { "src": "/", "dest": "/api/index.go" },
-    { "src": "/ping", "dest": "/api/ping.go" }
+    { "src": "/ping", "dest": "/api/ping.go" },
+    { "src": "/multi", "dest": "/api/multi.go" }
   ]
 }
