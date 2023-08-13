@@ -7,7 +7,7 @@
   "builds": [
     {
       "src": "api/**/*.go",
-      "use": "@now/go"
+      "use": "@vercel/go"
     }
   ],
   "routes": [
